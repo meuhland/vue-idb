@@ -2,9 +2,9 @@
 
 import lodash from 'lodash'
 
-require("babel-core/register")
+require("@babel/register")
 if (! window._babelPolyfill) {
-  require("babel-polyfill");
+  require("@babel/polyfill");
 }
 
 import dbOpen from './db-open'

@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
-var ExtractTextPlugin = require("extract-text-webpack-plugin")
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './dev/main.js',
@@ -28,7 +28,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: [MiniCssExtractPlugin, 'css-loader'],
         exclude: /node_modules/
       },
       {
@@ -54,7 +54,7 @@ module.exports = {
       minimize: false
     })
   ],
-  devtool: '#source-map'
+  devtool: 'source-map'
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -73,17 +73,8 @@ if (process.env.NODE_ENV === 'production') {
     library: 'VueIdb',
     libraryTarget: 'umd'
   }
-  module.exports.devtool = '#cheap-module-source-map'
-  module.exports.module.rules[0].options.loaders = {
-    css: ExtractTextPlugin.extract({
-      use: 'css-loader',
-      fallback: 'vue-style-loader' // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
-    }),
-    less: ExtractTextPlugin.extract({
-      use: 'css-loader!less-loader',
-      fallback: 'vue-style-loader'
-    })
-  }
+  module.exports.devtool = 'cheap-module-source-map';
+  
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
@@ -93,7 +84,7 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
-    new ExtractTextPlugin("style.css"),
-    new UglifyJSPlugin()
+    new MiniCssExtractPlugin({ filename: "style.css"}),
+    new TerserPlugin()
   ])
 }
