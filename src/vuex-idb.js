@@ -1,11 +1,7 @@
 'use strict'
 
 import lodash from 'lodash'
-
-require("@babel/register")
-if (! window._babelPolyfill) {
-  require("@babel/polyfill");
-}
+require("core-js/stable");
 
 import dbOpen from './db-open'
 
